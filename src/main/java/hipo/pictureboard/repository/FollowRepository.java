@@ -24,4 +24,13 @@ public class FollowRepository {
                     .setParameter("followMemberId", followMember.getId())
                     .getResultList();
     }
+
+    public List<Follow> findByFollowOneMember(Member followMember, Member followedMember) {
+        return em.createQuery("select f from Follow f join f.followMember m" +
+                        " where f.followedMember = :followedMember" +
+                        " and m.id = :followMemberId", Follow.class)
+                .setParameter("followedMember", followedMember)
+                .setParameter("followMemberId", followMember.getId())
+                .getResultList();
+    }
 }

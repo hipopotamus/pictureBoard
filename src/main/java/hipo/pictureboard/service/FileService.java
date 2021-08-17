@@ -2,12 +2,14 @@ package hipo.pictureboard.service;
 
 import hipo.pictureboard.domain.Img;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+@Service
 public class FileService {
 
     public String getProfilePath(String filename, String path) {

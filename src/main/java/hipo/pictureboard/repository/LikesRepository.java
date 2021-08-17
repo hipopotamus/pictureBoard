@@ -26,12 +26,12 @@ public class LikesRepository {
                 .getResultList();
     }
 
-    public Likes findByOneMember(Picture picture, Member member) {
+    public List<Likes> findByOneMember(Member member, Picture picture) {
         return em.createQuery("select l from Likes l join l.picture p" +
                         " where p.id = :pictureId" +
                         " and p.member.id = :memberId", Likes.class)
                 .setParameter("pictureId", picture.getId())
                 .setParameter("memberId", member.getId())
-                .getSingleResult();
+                .getResultList();
     }
 }

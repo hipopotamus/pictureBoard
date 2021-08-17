@@ -17,14 +17,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Member create(String loginId, String password, String nickName, String fileName, String storeName) {
-        Member member = new Member();
-        Img profilePicture = new Img(fileName, storeName);
-
-        member.setLoginId(loginId);
-        member.setPassword(password);
-        member.setNickName(nickName);
-        member.setProfilePicture(profilePicture);
+    public Member create(String loginId, String password, String nickName, Img profilePicture) {
+        Member member = Member.createMember(loginId, password, nickName, profilePicture);
         join(member);
         return member;
     }

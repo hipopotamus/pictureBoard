@@ -22,4 +22,14 @@ public class Likes {
     @JoinColumn(name = "picture_id")
     private Picture picture;
 
+    @Enumerated(EnumType.STRING)
+    private OneClickStatus status;
+
+    public static Likes createLikes(Member member, Picture picture) {
+        Likes likes = new Likes();
+        likes.setMember(member);
+        likes.setPicture(picture);
+        likes.setStatus(OneClickStatus.CLICK);
+        return likes;
+    }
 }

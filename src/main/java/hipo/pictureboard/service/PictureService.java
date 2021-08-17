@@ -4,8 +4,11 @@ import hipo.pictureboard.domain.*;
 import hipo.pictureboard.repository.FollowRepository;
 import hipo.pictureboard.repository.MemberRepository;
 import hipo.pictureboard.repository.PictureRepository;
+import javassist.bytecode.LineNumberAttribute;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -13,7 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-@Repository
+@Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PictureService {
@@ -22,8 +25,56 @@ public class PictureService {
     private final PictureRepository pictureRepository;
     private final FollowRepository followRepository;
 
+    @Transactional
+    public Picture create(String title, String content, PictureType pictureType,
+                          Long memberId, Img pictureImg) {
+        Member member = memberRepository.findOne(memberId);
+        Picture picture = Picture.createPicture(title, content, pictureType, member, pictureImg);
+        pictureRepository.save(picture);
+        return picture;
+    }
+
     public List<Picture> findAll() {
         return pictureRepository.findByAll();
+    }
+
+    public List<Picture> AllByPage(int page) {
+        return pictureRepository.AllByPage(page);
+    }
+
+    public int AllPictureSize() {
+        return pictureRepository.findByAll().size();
+    }
+
+    public List<Picture> findByMember(Long memberId) {
+        Member member = memberRepository.findOne(memberId);
+        return pictureRepository.findByMember(member);
+    }
+
+    public List<Picture> MemberByPage(Long memberId, int page) {
+        Member member = memberRepository.findOne(memberId);
+        return pictureRepository.MemberByPage(member, page);
+    }
+
+    public int MemberPictureSize(Long memberId) {
+        Member member = memberRepository.findOne(memberId);
+        return pictureRepository.findByMember(member).size();
+    }
+
+    public List<Picture> PictureTypeByPage(PictureType pictureType, int page) {
+        return pictureRepository.PictureTypeByPage(pictureType, page);
+    }
+
+    public int PictureTypePictureSize(PictureType pictureType) {
+        return pictureRepository.findByPictureType(pictureType).size();
+    }
+
+    public List<Picture> searchByTitle(String title) {
+        return pictureRepository.findByTitle(title);
+    }
+
+    public int TitlePictureSize(String title) {
+        return pictureRepository.findByTitle(title).size();
     }
 
     public List<Picture> recommendByFollow(Long memberId) {
@@ -41,24 +92,7 @@ public class PictureService {
 
     public List<Picture> rankByLikes() {
         List<Picture> pictures = pictureRepository.findByAll();
-        pictures.sort(Comparator.comparing(Picture::getLikeCount));
+        pictures.sort(Comparator.comparing(Picture::getLikeCount, Comparator.reverseOrder()));
         return pictures;
-    }
-
-    public List<Picture> searchByTitle(String title) {
-        return pictureRepository.findByTitle(title);
-    }
-
-    public Picture create(String title, String content, PictureType pictureType,
-                          Long memberId, Img pictureImg) {
-        Picture picture = new Picture();
-        Member member = memberRepository.findOne(memberId);
-        picture.setTitle(title);
-        picture.setContent(content);
-        picture.setPictureType(pictureType);
-        picture.setMember(member);
-        picture.setPicture(pictureImg);
-        pictureRepository.save(picture);
-        return picture;
     }
 }

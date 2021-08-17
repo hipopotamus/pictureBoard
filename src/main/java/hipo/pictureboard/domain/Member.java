@@ -47,4 +47,13 @@ public class Member {
         this.following = resetFollower;
     }
 
+    public static Member createMember(String loginId, String password, String nickName, Img profilePicture) {
+        Member member = new Member();
+        member.setLoginId(loginId);
+        member.setPassword(password);
+        member.setNickName(nickName);
+        member.setProfilePicture(profilePicture);
+        return member;
+    }
+
 }

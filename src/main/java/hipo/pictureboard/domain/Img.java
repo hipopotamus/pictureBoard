@@ -12,7 +12,6 @@ public class Img {
     private String storeFileName;
 
     protected Img() {
-
     }
 
     public Img(String fileName, String storeFileName) {

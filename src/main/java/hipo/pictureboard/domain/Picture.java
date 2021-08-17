@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -21,7 +22,7 @@ public class Picture {
     @Enumerated(EnumType.STRING)
     private PictureType pictureType;
 
-    private Date saveDate;
+    private LocalDateTime saveDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -42,5 +43,16 @@ public class Picture {
             throw new NotBelowZeroException("likeCount don't below zero");
         }
         this.likeCount = resetLikeCount;
+    }
+
+    public static Picture createPicture(String title, String content, PictureType pictureType, Member member,
+                                        Img pictureImg) {
+        Picture picture = new Picture();
+        picture.setTitle(title);
+        picture.setContent(content);
+        picture.setMember(member);
+        picture.setPicture(pictureImg);
+        picture.setSaveDate(LocalDateTime.now());
+        return picture;
     }
 }
