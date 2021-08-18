@@ -37,7 +37,7 @@ public class PictureRepository{
     }
 
     public List<Picture> findByAll() {
-        return em.createQuery("select p from Picture p", Picture.class)
+        return em.createQuery("select p from Picture p order by p.saveDate DESC", Picture.class)
                 .getResultList();
     }
 

@@ -43,12 +43,11 @@ public class MemberController {
         }
 
         try {
-            memberService.create(form.getLoginId(), form.getPassword(), form.getNickName(), fileService.createImg(form.getProfilePicture()));
+            memberService.create(form.getLoginId(), form.getPassword(), form.getNickName(), fileService.storeFile(form.getProfilePicture(), fileProfile));
         } catch (IllegalStateException e) {
             bindingResult.reject("duplication", "아이디 또는 닉네임이 중복되었습니다.");
             return "/members/newMemberForm";
         }
-        fileService.storeFile(form.getProfilePicture(), fileProfile);
         return "redirect:/login";
     }
 }
