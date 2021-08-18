@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink- to-fit=no">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <style>
+        .btn {
+            width :222px;
+            height : 50px;
+            font-size: 21px;
+            margin: 3px;
+            border-radius: 2.5em;
+        }
+        .container {
+            width: 315px;
+            height: 355px;
+            background-color: rgba(192, 192, 192, 0.85);
+            position: relative;
+            margin: auto;
+            border-radius: 1em
+        }
+    </style>
+</head>
+<body style="background: url('/img/home2.jpg') no-repeat fixed; background-size: cover;">
+<div class="container text-center"
+     style="top: 260px;">
+    <div style="position: relative; top: 23px">
+        <div class=container style=" height:100px; width:100px;
+            background: url('/img/hiponacho.png') no-repeat 50% 50%/90% 75%; margin-bottom: -3px"></div>
+        <p style="color: gray">추억을 공유하세요</p>
+    </div>
+    <div style="position: relative; top: 38px">
+        <div>
+            <button type="button" class="btn btn-primary"
+                    th:onclick="|location.href='@{/members/new}'|">
+                계정 만들기
+            </button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-secondary"
+                    th:onclick="|location.href='@{/login}'|">로그인
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

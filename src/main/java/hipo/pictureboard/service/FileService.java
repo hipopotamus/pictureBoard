@@ -12,8 +12,14 @@ import java.util.UUID;
 @Service
 public class FileService {
 
-    public String getProfilePath(String filename, String path) {
+    public String getFullPath(String filename, String path) {
         return path + filename;
+    }
+
+    public Img createImg(MultipartFile multipartFile) {
+        String originalFilename = multipartFile.getOriginalFilename();
+        String storeFileName = createStoreFileName(originalFilename);
+        return new Img(originalFilename, storeFileName);
     }
 
     public Img storeFile(MultipartFile multipartFile, String path) throws IOException {
@@ -23,7 +29,7 @@ public class FileService {
 
         String originalFileName = multipartFile.getOriginalFilename();
         String storeFileName = createStoreFileName(originalFileName);
-        multipartFile.transferTo(new File(getProfilePath(storeFileName, path)));
+        multipartFile.transferTo(new File(getFullPath(storeFileName, path)));
         return new Img(originalFileName, storeFileName);
     }
 
