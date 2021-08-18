@@ -26,8 +26,12 @@ public class PictureRepository{
     }
 
     public List<Picture> AllByPage(int page) {
-        return em.createQuery("select p from Picture p", Picture.class)
-                .setFirstResult(page)
+        if (page < 1) {
+            page = 1;
+        }
+
+        return em.createQuery("select p from Picture p order by p.saveDate DESC", Picture.class)
+                .setFirstResult((page - 1) * Page.maxPage)
                 .setMaxResults(Page.maxPage)
                 .getResultList();
     }
@@ -39,48 +43,64 @@ public class PictureRepository{
 
     public List<Picture> findByMember(Member member) {
         return em.createQuery("select p from Picture p join p.member m" +
-                        " where m.id = :memberId", Picture.class)
+                        " where m.id = :memberId" +
+                        " order by p.saveDate DESC", Picture.class)
                 .setParameter("memberId", member.getId())
                 .getResultList();
     }
 
     public List<Picture> MemberByPage(Member member, int page) {
+        if (page < 1) {
+            page = 1;
+        }
+
         return em.createQuery("select p from Picture p join p.member m" +
-                        " where m.id = :memberId", Picture.class)
+                        " where m.id = :memberId" +
+                        " order by p.saveDate DESC", Picture.class)
                 .setParameter("memberId", member.getId())
-                .setFirstResult(page)
+                .setFirstResult((page - 1) * Page.maxPage)
                 .setMaxResults(Page.maxPage)
                 .getResultList();
     }
 
     public List<Picture> findByPictureType(PictureType pictureType) {
         return em.createQuery("select p from Picture p" +
-                        " where p.pictureType = :pictureType", Picture.class)
+                        " where p.pictureType = :pictureType" +
+                        " order by p.saveDate DESC", Picture.class)
                 .setParameter("pictureType", pictureType)
                 .getResultList();
     }
 
     public List<Picture> PictureTypeByPage(PictureType pictureType, int page) {
+        if (page < 1) {
+            page = 1;
+        }
         return em.createQuery("select p from Picture p" +
-                " where p.pictureType = :pictureType", Picture.class)
+                        " where p.pictureType = :pictureType" +
+                        " order by p.saveDate DESC", Picture.class)
                 .setParameter("pictureType", pictureType)
-                .setFirstResult(page)
+                .setFirstResult((page - 1) * Page.maxPage)
                 .setMaxResults(Page.maxPage)
                 .getResultList();
     }
 
     public List<Picture> findByTitle(String title) {
         return em.createQuery("select p from Picture p" +
-                " where p.title like : title", Picture.class)
+                        " where p.title like : title" +
+                        " order by p.saveDate DESC", Picture.class)
                 .setParameter("title", "%" +title + "%")
                 .getResultList();
     }
 
     public List<Picture> TitleByPage(String title, int page) {
+        if (page < 1) {
+            page = 1;
+        }
         return em.createQuery("select p from Picture p" +
-                        " where p.title like : title", Picture.class)
+                        " where p.title like : title" +
+                        " order by p.saveDate DESC", Picture.class)
                 .setParameter("title", "%" +title + "%")
-                .setFirstResult(page)
+                .setFirstResult((page - 1) * Page.maxPage)
                 .setMaxResults(Page.maxPage)
                 .getResultList();
     }

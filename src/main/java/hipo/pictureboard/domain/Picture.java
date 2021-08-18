@@ -50,6 +50,7 @@ public class Picture {
         Picture picture = new Picture();
         picture.setTitle(title);
         picture.setContent(content);
+        picture.setPictureType(pictureType);
         picture.setMember(member);
         picture.setPicture(pictureImg);
         picture.setSaveDate(LocalDateTime.now());

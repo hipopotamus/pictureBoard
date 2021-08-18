@@ -16,7 +16,7 @@ public class LoginService {
     private final MemberRepository memberRepository;
 
     public Member login(String loginId, String password) {
-        Optional<Member> member = Optional.ofNullable(memberRepository.findByLoginId(loginId).get(1));
+        Optional<Member> member = Optional.ofNullable(memberRepository.findByLoginId(loginId).get(0));
 
         return member.filter(m -> m.getPassword().equals(password))
                 .orElse(null);

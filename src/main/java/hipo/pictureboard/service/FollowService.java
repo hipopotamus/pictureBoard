@@ -26,12 +26,26 @@ public class FollowService {
         return follow;
     }
 
+    public List<Follow> findByFollowingMember(Long followMemberId) {
+        Member followMember = memberRepository.findOne(followMemberId);
+        return followRepository.findByFollowMember(followMember);
+    }
+
+    public int sizeOfFollowingMember(Long followMemberId) {
+        return findByFollowingMember(followMemberId).size();
+    }
+
+    public int sizeOfFollowerMember(Long followedMemberId) {
+        Member member = memberRepository.findOne(followedMemberId);
+        return followRepository.findByFollowerMember(member).size();
+    }
+
     public boolean findByFollowOneMember(Long followMemberId, Long followedMemberId) {
         Member followMember = memberRepository.findOne(followMemberId);
         Member followedMember = memberRepository.findOne(followedMemberId);
         List<Follow> follows = followRepository.findByFollowOneMember(followMember, followedMember);
 
-        if (follows.isEmpty() || follows.get(1).getStatus() == OneClickStatus.CANCEL) {
+        if (follows.isEmpty() || follows.get(0).getStatus() == OneClickStatus.CANCEL) {
             return false;
         } else {
             return true;
@@ -49,7 +63,7 @@ public class FollowService {
             followedMember.addFollower();
             return createdFollow;
         } else {
-            Follow getFollow = follows.get(1);
+            Follow getFollow = follows.get(0);
             if (getFollow.getStatus() == OneClickStatus.CLICK) {
                 getFollow.setStatus(OneClickStatus.CANCEL);
                 followMember.removeFollowing();

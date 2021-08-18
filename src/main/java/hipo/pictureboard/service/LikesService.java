@@ -35,7 +35,7 @@ public class LikesService {
         Picture picture = pictureRepository.findOne(pictureId);
         List<Likes> likesList = likesRepository.findByOneMember(member, picture);
 
-        if (likesList.isEmpty() || likesList.get(1).getStatus() == OneClickStatus.CANCEL) {
+        if (likesList.isEmpty() || likesList.get(0).getStatus() == OneClickStatus.CANCEL) {
             return false;
         } else {
             return true;
@@ -52,7 +52,7 @@ public class LikesService {
             picture.addLikeCount();
             return createdLikes;
         } else {
-            Likes getLikes = likesList.get(1);
+            Likes getLikes = likesList.get(0);
             if (getLikes.getStatus() == OneClickStatus.CLICK) {
                 getLikes.setStatus(OneClickStatus.CANCEL);
                 picture.removeLikeCount();

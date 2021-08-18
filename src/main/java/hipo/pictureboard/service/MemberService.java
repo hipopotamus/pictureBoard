@@ -27,6 +27,14 @@ public class MemberService {
         return memberRepository.findOne(memberId);
     }
 
+    public List<Member> findByLoginId(String loginId) {
+        return memberRepository.findByLoginId(loginId);
+    }
+
+    public List<Member> findByNickName(String nickName) {
+        return memberRepository.findByNickName(nickName);
+    }
+
     public Long join(Member member) {
         validateDuplicateLoginId(member);
         validateDuplicateNickName(member);

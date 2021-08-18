@@ -34,6 +34,10 @@ public class PictureService {
         return picture;
     }
 
+    public Picture findOne(Long pictureId) {
+        return pictureRepository.findOne(pictureId);
+    }
+
     public List<Picture> findAll() {
         return pictureRepository.findByAll();
     }
@@ -71,6 +75,10 @@ public class PictureService {
 
     public List<Picture> searchByTitle(String title) {
         return pictureRepository.findByTitle(title);
+    }
+
+    public List<Picture> TitleByPage(String title, int page) {
+        return pictureRepository.TitleByPage(title, page);
     }
 
     public int TitlePictureSize(String title) {
