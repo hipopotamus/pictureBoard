@@ -23,17 +23,17 @@ public class ImgController {
     @Value("${file.picture}")
     private String filePicture;
 
-    @GetMapping("/img/{imgName}")
+    @GetMapping("/imgFile/{imgName}")
     public Resource getImg(@PathVariable String imgName) throws MalformedURLException {
         return new UrlResource("file:" + fileImg + imgName);
     }
 
-    @GetMapping("/profile/{profileName}")
+    @GetMapping("/profileFile/{profileName}")
     public Resource getProfile(@PathVariable String profileName) throws MalformedURLException {
         return new UrlResource("file:" + fileProfile + profileName);
     }
 
-    @GetMapping("/picture/{pictureName}")
+    @GetMapping("/pictureFile/{pictureName}")
     public Resource getPicture(@PathVariable String pictureName) throws MalformedURLException {
         return new UrlResource("file:" + filePicture + pictureName);
     }

@@ -62,7 +62,7 @@
             <div class="field-error" th:errors="*{password}"/>
         </div>
 
-        <div style="margin-bottom: 35px">
+        <div style="margin-bottom: 20px">
             <label for="nickname" class="label">닉네임</label>
             <input type="text" id="nickname" th:field="*{nickName}" class="form-control" placeholder="닉네임을 입력해주세요."
                    th:errorclass="field-error">
@@ -70,6 +70,7 @@
         </div>
 
         <div style="margin-bottom: 20px">
+            <label for="profilePicture" class="label" style="position: relative; left: -75px">프로필 사진</label>
             <input class="form-control" type="file" th:field="*{profilePicture}" th:errorclass="field-error">
             <div class="field-error" th:errors="*{profilePicture}">
             </div>

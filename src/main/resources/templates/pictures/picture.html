@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink- to-fit=no">
@@ -9,50 +9,19 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     <style>
-    .swiper-slide card {
-    max-width:100%;
-    overflow: hidden;
-    }
-    .swiper-button-next {
-    background: url('/img/right-arrow.png') no-repeat;
-    background-size: 100% auto;
-    background-position: right center;
-    }
+        .profile-user-img{
+            width:50px;
+            height: 50px;
+            border-radius: 70%;
+            overflow: hidden;
+        }
 
-    .swiper-button-prev {
-    background: url('/img/left-arrow.png') no-repeat;
-    background-size: 100% auto;
-    background-position: left center;
-    }
+        .profile-user-img-img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-    .swiper-button-next::after,
-    .swiper-button-prev::after {
-    display: none;
-    }
-
-    .swiper-container {
-    height:320px;
-    width: 90%;
-    }
-
-    .swiper-slide img {
-    box-shadow:0 0 5px #555;
-    max-width:100%;
-    height: 219px;
-    object-fit: cover;
-    }
-    .profile-user-img{
-        width:50px;
-        height: 50px;
-        border-radius: 70%;
-        overflow: hidden;
-    }
-
-    .profile-user-img-img{
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
     </style>
 </head>
 <body>
@@ -107,59 +76,48 @@
     </span>
 </div>
 
-<div th:if="${!(pictures.isEmpty())}" class="swiper-container" style="position: relative; top: 100px">
-    <div class="row">
-        <p class="col" style="font-size: 20px"><b>새로운 사진들</b></p>
-        <p class="col" th:onclick="|location.href='@{/board/all}'|"
-           style="text-align: right;cursor: pointer; font-size: 15px; color: gray">모두보기</p>
-    </div>
-    <div class="swiper-wrapper">
-        <div class="swiper-slide" th:each=" picture : ${pictures}">
-            <div class="card" style="border:0;">
-                <img th:src="|/pictureFile/${picture.picture.storeFileName}|"
-                     th:onclick="|location.href='@{/picture/{a}(a=${picture.getId()})}'|"
-                     style="cursor: pointer" class="card-img-top">
-                <div class="card-body" style="max-height: 14px; padding: 0.75em">
-                    <h6 class="card-title" style="margin-bottom: 4px; font-weight: bold"
-                        th:text="${picture.title}">새로운 사진들</h6>
-                    <p class="card-text" th:text="${picture.member.nickName}" style="color: gray">테스터</p>
-                </div>
+<div class="container-fluid" style="height: 1255px; background-color: rgba(210,210,210,1);" >
+    <div>
+        <span class="container" style="border-top-left-radius: 1em; border-top-right-radius: 1em; display: inline-block; height: 800px; width: 920px; background-color: white; margin-top: 30px; margin-left: 400px">
+            <div style="text-align: center">
+                <img th:src="|/pictureFile/${picture.picture.storeFileName}|" style=" height:780px; width: 895px; object-fit: contain">
             </div>
+        </span>
+        <span style="display: inline-block; width: 300px; height: 200px; margin-left: 56px; position: relative; bottom: 230px;  ">
+            <div>
+                <span class="profile-user-img" style="display: inline-block; height: 50px; width: 50px;">
+                    <img th:src ="|/profileFile/${picture.member.profilePicture.storeFileName}|" alt="profile-user-img" class="profile-user-img-img">
+                </span>
+                <span style=" display: inline-block; position: relative; bottom: 17px; right: -9px; font-weight: bold" th:text="${picture.member.nickName}">
+                    <p>이름</p>
+                </span>
+            </div>
+            <div th:if="${selfFollowCheck == true}" style="margin-top: 10px">
+                <button th:if="${followCheck == true}" style="width: 285px; border-radius: 1em;" class="btn btn-secondary" type="button" th:onclick="|location.href='@{/picture/follow/{a}(a=${picture.getId()})}'|">팔로우 중</button>
+                <button th:if="${followCheck == false}" style="width: 285px; border-radius: 1em;" class="btn btn-primary" type="button" th:onclick="|location.href='@{/picture/follow/{a}(a=${picture.getId()})}'|">팔로우 하기</button>
+            </div>
+        </span>
+    </div>
+
+    <div class="container" style="height: 300px; width: 920px; background-color: whitesmoke; margin-left: 400px">
+        <div style="text-align: right; margin-right: 40px; padding-top: 25px">
+            <span th:text="${picture.likeCount}">좋아요 수</span>
+        </div>
+        <div style="text-align: right;">
+            <button th:if="${likeCheck == true}" style="border-radius: 2em; margin-right: 10px" class="btn btn-secondary" type="button" th:onclick="|location.href='@{/picture/like/{a}(a=${picture.getId()})}'|">좋아요</button>
+            <button th:if="${likeCheck == false}" style="border-radius: 2em; margin-right: 10px" class="btn btn-primary" type="button" th:onclick="|location.href='@{/picture/like/{a}(a=${picture.getId()})}'|">좋아요</button>
+        </div>
+        <div style="text-align: left; margin-left: 115px; font-size: 20px; font-weight: bold" th:text="${picture.title}">
+            <h5>Title</h5>
+        </div>
+        <div th:if="${picture.content != null}" style="text-align: left; margin-left: 115px; padding-top: 20px" th:text="${picture.content}">
+            <pre>
+                간단한 요약입니다.
+                반갑습니다.
+            </pre>
         </div>
     </div>
-    <!-- 네비게이션 -->
-    <div class="swiper-button-next"></div><!-- 다음 버튼 (오른쪽에 있는 버튼) -->
-    <div class="swiper-button-prev"></div><!-- 이전 버튼 -->
 </div>
 
-<script>
-
-    document.addEventListener("DOMContentLoaded", function() {
-
-        var mySwiper = new Swiper('.swiper-container', {
-            slidesPerView: 5,
-            slidesPerGroup: 5,
-            observer: true,
-            observeParents: true,
-            spaceBetween: 24,
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            breakpoints: {
-                1280: {
-                    slidesPerView: 3,
-                    slidesPerGroup: 3,
-                },
-                720: {
-                    slidesPerView: 1,
-                    slidesPerGroup: 1,
-                }
-            }
-        });
-
-    });
-</script>
-</style>
 </body>
 </html>

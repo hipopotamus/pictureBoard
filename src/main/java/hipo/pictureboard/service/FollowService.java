@@ -17,6 +17,7 @@ public class FollowService {
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
 
+    @Transactional
     public Follow create(Long followMemberId, Long followedMemberId) {
         Member followMember = memberRepository.findOne(followMemberId);
         Member followedMember = memberRepository.findOne(followedMemberId);
@@ -52,6 +53,14 @@ public class FollowService {
         }
     }
 
+    public boolean selfFollowCheck(Long followMemberId, Long followedMemberId) {
+        if (followMemberId == followedMemberId) {
+            return false;
+        }
+        return true;
+    }
+
+    @Transactional
     public Follow oneClick(Long followMemberId, Long followedMemberId) {
         Member followMember = memberRepository.findOne(followMemberId);
         Member followedMember = memberRepository.findOne(followedMemberId);

@@ -2,9 +2,123 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink- to-fit=no">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.1/css/swiper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.1/js/swiper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <style>
+        .profile-user-img{
+            width:50px;
+            height: 50px;
+            border-radius: 70%;
+            overflow: hidden;
+        }
+
+        .profile-user-img-img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
 </head>
 <body>
+<div class="container-fluid" style="height: 120px;">
+
+    <span style="display:inline-block; margin-top:3px; background: url('/img/hiponacho.png') no-repeat; height: 85px; width: 85px;
+                background-size: contain; position: relative; left: 30px; top: 15px; cursor: pointer"
+          th:onclick="|location.href='@{/boards/main}'|">
+    </span>
+
+    <span style="height: 100px; width: 700px; margin-left: 439px; display: inline-block; position: relative; top:-33px;">
+        <form action="" th:action method="get" style="width: 450px; margin: auto">
+            <input type="text" id="search" name="search" class="form-control " placeholder="사진 제목 검색">
+        </form>
+    </span>
+
+    <span style="height: 45px; width: 100px; display: inline-block; margin-left: 185px; position: relative; top:-45px;">
+        <button class="btn btn-primary" type="button" style="margin-top: 17px"
+                th:onclick="|location.href='@{/picture/add}'|">사진 올리기
+        </button>
+    </span>
+
+    <span style="height: 100px; width: 55px; display: inline-block; position: relative; top: -16px; margin-left: 45px">
+        <div class="profile-user-img">
+            <img th:src ="|/profileFile/${loginMember.profilePicture.storeFileName}|" alt="profile-user-img" class="profile-user-img-img">
+        </div>
+    </span>
+
+    <span style="height: 100px; width: 100px; display: inline-block; position: relative; top: -42px; margin-left: 10px">
+        <button th:text="${loginMember.nickName}" style="margin-top: 12px" class="btn btn-secondary dropdown-toggle"
+                type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                히포
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <p style="margin-bottom: 2px; font-size: 17px; padding-left: 13px; font-weight: bold"
+                   th:text="${loginMember.nickName}"><b>히포</b></p>
+                <p style="margin-bottom: 10px; font-size: 13px; padding-left: 13px; color: gray"
+                   th:text="*{loginMember.loginId}">테스터</p>
+                <div class="row" style="font-size: 13px; padding-left: 13px; margin-bottom: 1.5px">
+                    <p class="col" style="margin-bottom: 1px; font-weight: bold"
+                       th:text="${loginMember.following}"><b>40명</b></p>
+                    <p class="col" style="margin-bottom: 1px; font-weight: bold"
+                       th:text="${loginMember.follower}"><b>2명</b></p>
+                </div>
+                <div class="row" style="font-size: 11px; padding-left: 13px;">
+                    <p class="col">팔로우 중</p>
+                    <p class="col">팔로워 수</p>
+                </div>
+                <li><a class="dropdown-item" href="/member/room">마이 룸</a></li>
+                <li><a class="dropdown-item" href="/logout">로그아웃</a></li>
+            </ul>
+    </span>
+</div>
+
+<form th:action method="post" th:object="${pictureForm}" enctype="multipart/form-data">
+    <div class="container-fluid" style=" height: 175px; background-color: rgba(50,50,50,1);" >
+        <div style="width: 300px; margin: auto; position: relative; top: 40px">
+            <input class="form-control" type="file" th:field="*{pictureFile}" th:errorclass="field-error">
+        </div>
+        <div style=" margin: auto; position: relative; top: 50px; text-align: center">
+            <p style="color: silver; margin-bottom: 7px">JPG JPEG PNG</p>
+            <p style="color: silver">최대 50MB 이내, 1장만 등록가능 합니다.</p>
+        </div>
+    </div>
+
+    <div class="container" style="height: 405px; width: 640px; background-color: rgba(210,210,210,1); margin-top: 70px; border-radius: 1em">
+        <div style="padding-top: 25px">
+            <input type="text" class="form-control" th:field="*{title}" placeholder="제목을 적어주세요."
+                   th:errorclass="field-error">
+            <div class="field-error" th:errors="*{title}">
+            </div>
+        </div>
+
+        <div>
+            <textarea style="height: 100px" class="form-control" aria-label="With textarea" th:field="*{content}" placeholder="사진 설명을 적어주세요.">
+            </textarea>
+        </div>
+
+        <div style="margin-left: 10px; margin-top: 30px">
+            <div>사진 타입</div>
+            <div th:each="type : ${pictureType}" class="form-check form-check-inline">
+                <input type="radio"  th:field="*{pictureType}" th:value="${type.name()}" class="form-check-input">
+                <label th:for="${#ids.prev('pictureType')}" th:text="${type.description}" class="form-check-label">
+                    사진종류
+                </label>
+            </div>
+            <div class="field-error" th:errors="*{pictureType}"></div>
+        </div>
+        <div style="margin: auto; text-align: center; width: 200px; position: relative; top: 40px;">
+            <button style="width: 120px; height: 45px; font-size: 19px" class="btn btn-primary" type="submit">등록 하기</button>
+        </div>
+    </div>
+</form>
 
 </body>
 </html>

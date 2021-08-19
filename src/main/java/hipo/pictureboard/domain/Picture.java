@@ -12,6 +12,7 @@ import java.util.Date;
 @Getter @Setter
 public class Picture {
 
+
     @Id @GeneratedValue
     @Column(name = "picture_id")
     private Long id;
