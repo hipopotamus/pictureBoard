@@ -64,7 +64,7 @@
     </span>
 
     <span style="height: 100px; width: 700px; margin-left: 439px; display: inline-block; position: relative; top:-33px;">
-        <form action="" th:action method="get" style="width: 450px; margin: auto">
+        <form action="" th:action="|/boards/picture/search/0|" method="get" style="width: 450px; margin: auto">
             <input type="text" id="search" name="search" class="form-control " placeholder="사진 제목 검색">
         </form>
     </span>
@@ -110,7 +110,7 @@
 <div th:if="${!(pictures.isEmpty())}" class="swiper-container" style="position: relative; top: 100px">
     <div class="row">
         <p class="col" style="font-size: 20px"><b>새로운 사진들</b></p>
-        <p class="col" th:onclick="|location.href='@{/board/all}'|"
+        <p class="col" th:onclick="|location.href='@{/boards/picture/0}'|"
            style="text-align: right;cursor: pointer; font-size: 15px; color: gray">모두보기</p>
     </div>
     <div class="swiper-wrapper">

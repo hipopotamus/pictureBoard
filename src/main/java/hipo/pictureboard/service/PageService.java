@@ -14,10 +14,16 @@ public class PageService {
         if (page < 1) {
             page = 1;
         }
-        int totalPageSize = (int) Math.ceil((double) size / (double) Page.maxPage);
-        int endPageNumber = 1;
 
-        for (int i = 1; page + 1 > endPageNumber; i++) {
+        if (size == 0) {
+            int[] PageNumbers = new int[1];
+            PageNumbers[0] = 1;
+            return PageNumbers;
+        }
+        int totalPageSize = (int) Math.ceil((double) size / (double) Page.maxPage);
+        int endPageNumber = Page.maxPageNumber;
+
+        for (int i = 2; page > endPageNumber; i++) {
             endPageNumber = Page.maxPageNumber * i;
         }
 
@@ -34,5 +40,18 @@ public class PageService {
         }
 
         return PageNumbers;
+    }
+
+    public boolean checkLastPage(int page, int size) {
+        if (size == 0) {
+            return false;
+        }
+
+        int[] pageNumber = makePageNumber(page, size);
+        int totalPageSize = (int) Math.ceil((double) size / (double) Page.maxPage);
+        if (pageNumber[pageNumber.length - 1] >= totalPageSize) {
+            return false;
+        }
+        return true;
     }
 }

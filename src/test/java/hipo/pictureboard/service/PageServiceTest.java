@@ -20,10 +20,16 @@ public class PageServiceTest {
     @Test
     public void 페이지_테스트() {
 
-        for (int i = 0; i < 20; i++) {
-            Arrays.stream(pageService.makePageNumber(i, 401)).forEach(p-> System.out.println(p));
+        for (int i = 6; i < 7; i++) {
+            Arrays.stream(pageService.makePageNumber(i, 101)).forEach(p-> System.out.println(p));
         }
 
+    }
+
+    @Test
+    public void 마지막_페이지_테스트() {
+        System.out.println("페이지 테스트 결과 = " + pageService.makePageNumber(6, 101));
+        System.out.println("마지막 페이지 테스트 결과 = " + pageService.checkLastPage(6, 101));
     }
 
 }
