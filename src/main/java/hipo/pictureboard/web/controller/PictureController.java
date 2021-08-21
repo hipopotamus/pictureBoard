@@ -3,10 +3,7 @@ package hipo.pictureboard.web.controller;
 import hipo.pictureboard.domain.Member;
 import hipo.pictureboard.domain.Picture;
 import hipo.pictureboard.domain.PictureType;
-import hipo.pictureboard.service.FileService;
-import hipo.pictureboard.service.FollowService;
-import hipo.pictureboard.service.LikesService;
-import hipo.pictureboard.service.PictureService;
+import hipo.pictureboard.service.*;
 import hipo.pictureboard.web.argumentresolver.Login;
 import hipo.pictureboard.web.form.NewPictureForm;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +27,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class PictureController {
 
+    private final MemberService memberService;
     private final PictureService pictureService;
     private final FileService fileService;
     private final LikesService likesService;
@@ -44,7 +42,8 @@ public class PictureController {
     }
 
     @GetMapping("/picture/add")
-    public String createPicture(@Login Member loginMember, @ModelAttribute("pictureForm") NewPictureForm pictureForm, Model model) {
+    public String createPicture(@Login Member member, @ModelAttribute("pictureForm") NewPictureForm pictureForm, Model model) {
+        Member loginMember = memberService.findOne(member.getId());
         model.addAttribute("loginMember", loginMember);
         return "/pictures/newPictureForm";
     }
@@ -70,7 +69,8 @@ public class PictureController {
     }
 
     @GetMapping("/picture/{pictureId}")
-    public String picture(@Login Member loginMember, @PathVariable Long pictureId, Model model) {
+    public String picture(@Login Member member, @PathVariable Long pictureId, Model model) {
+        Member loginMember = memberService.findOne(member.getId());
         model.addAttribute("loginMember", loginMember);
 
         Picture picture = pictureService.findOne(pictureId);

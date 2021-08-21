@@ -4,6 +4,7 @@ import hipo.pictureboard.domain.*;
 import hipo.pictureboard.repository.FollowRepository;
 import hipo.pictureboard.repository.MemberRepository;
 import hipo.pictureboard.repository.PictureRepository;
+import hipo.pictureboard.web.dto.FollowPictureDTO;
 import javassist.bytecode.LineNumberAttribute;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ public class PictureService {
     private final MemberRepository memberRepository;
     private final PictureRepository pictureRepository;
     private final FollowRepository followRepository;
+    private final FollowService followService;
 
     @Transactional
     public Picture create(String title, String content, PictureType pictureType,
@@ -102,5 +104,46 @@ public class PictureService {
         List<Picture> pictures = pictureRepository.findByAll();
         pictures.sort(Comparator.comparing(Picture::getLikeCount, Comparator.reverseOrder()));
         return pictures;
+    }
+
+    public List<FollowPictureDTO> getFollowAndPictures(Long memberId) {
+        Member member = memberRepository.findOne(memberId);
+        List<Follow> followsByFollowingMember = followRepository.findByFollowMember(member);
+        List<FollowPictureDTO> followPictureDTOList = new ArrayList<>();
+
+        for (Follow follow : followsByFollowingMember) {
+            FollowPictureDTO followPictureDTO = new FollowPictureDTO();
+            Member followedMember = follow.getFollowedMember();
+            followPictureDTO.setFollowedMember(followedMember);
+
+            boolean followCheck = followService.findByFollowOneMember(member.getId(), followedMember.getId());
+            followPictureDTO.setFollowCheck(followCheck);
+
+            List<Picture> pictures = pictureRepository.followPictureByLikes(followedMember);
+            followPictureDTO.setFollowedPictures(pictures);
+            followPictureDTOList.add(followPictureDTO);
+        }
+        return followPictureDTOList;
+    }
+
+    public List<FollowPictureDTO> getOtherFollowAndPictures(Long memberId, Long loginId) {
+        Member member = memberRepository.findOne(memberId);
+        Member loginMember = memberRepository.findOne(loginId);
+        List<Follow> followsByFollowingMember = followRepository.findByFollowMember(member);
+        List<FollowPictureDTO> followPictureDTOList = new ArrayList<>();
+
+        for (Follow follow : followsByFollowingMember) {
+            FollowPictureDTO followPictureDTO = new FollowPictureDTO();
+            Member followedMember = follow.getFollowedMember();
+            followPictureDTO.setFollowedMember(followedMember);
+
+            boolean followCheck = followService.findByFollowOneMember(loginMember.getId(), followedMember.getId());
+            followPictureDTO.setFollowCheck(followCheck);
+
+            List<Picture> pictures = pictureRepository.followPictureByLikes(followedMember);
+            followPictureDTO.setFollowedPictures(pictures);
+            followPictureDTOList.add(followPictureDTO);
+        }
+        return followPictureDTOList;
     }
 }

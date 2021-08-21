@@ -1,9 +1,6 @@
 package hipo.pictureboard.repository;
 
-import hipo.pictureboard.domain.Member;
-import hipo.pictureboard.domain.Page;
-import hipo.pictureboard.domain.Picture;
-import hipo.pictureboard.domain.PictureType;
+import hipo.pictureboard.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -102,6 +99,15 @@ public class PictureRepository{
                 .setParameter("title", "%" +title + "%")
                 .setFirstResult((page - 1) * Page.maxPage)
                 .setMaxResults(Page.maxPage)
+                .getResultList();
+    }
+
+    public List<Picture> followPictureByLikes(Member followedMember) {
+        return em.createQuery("select p from Picture p " +
+                        "where p.member = :followedMember " +
+                        "order by p.likeCount DESC ", Picture.class)
+                .setParameter("followedMember", followedMember)
+                .setMaxResults(FollowConst.followPicture)
                 .getResultList();
     }
 

@@ -44,7 +44,7 @@ public class Member {
         if (resetFollower < 0) {
             throw new NotBelowZeroException("following don't below zero");
         }
-        this.following = resetFollower;
+        this.follower = resetFollower;
     }
 
     public static Member createMember(String loginId, String password, String nickName, Img profilePicture) {

@@ -22,6 +22,12 @@
             object-fit: cover;
         }
 
+        .myClass img {
+            box-shadow:0 0 5px #555;
+            max-width:100%;
+            height: 170px;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
@@ -76,49 +82,40 @@
     </span>
 </div>
 
-<div class="container-fluid" style="height: 1255px; background-color: rgba(210,210,210,1);" >
-    <div>
-        <span class="container" style="border-top-left-radius: 1em; border-top-right-radius: 1em; display: inline-block; height: 800px; width: 920px; background-color: white; margin-top: 30px; margin-left: 400px">
-            <div style="text-align: center">
-                <img th:src="|/pictureFile/${picture.picture.storeFileName}|" style=" height:780px; width: 895px; object-fit: contain">
-            </div>
-        </span>
-        <span th:if="${selfFollowCheck == true}" style="display: inline-block; width: 300px; height: 200px; margin-left: 56px; position: relative; bottom: 230px;  ">
-            <div>
-                <span class="profile-user-img" style="display: inline-block; height: 50px; width: 50px;">
-                    <img th:src ="|/profileFile/${picture.member.profilePicture.storeFileName}|" alt="profile-user-img" class="profile-user-img-img"
-                    th:onclick="|location.href='@{/member/otherRoom/{a}(a=${picture.member.Id})}'|" style="cursor: pointer">
-                </span>
-                <span style=" display: inline-block; position: relative; bottom: 17px; right: -9px; font-weight: bold" th:text="${picture.member.nickName}">
-                    <p>이름</p>
-                </span>
-            </div>
-            <div th:if="${selfFollowCheck == true}" style="margin-top: 10px">
-                <button th:if="${followCheck == true}" style="width: 285px; border-radius: 1em;" class="btn btn-secondary" type="button" th:onclick="|location.href='@{/picture/follow/{a}(a=${picture.getId()})}'|">팔로우 중</button>
-                <button th:if="${followCheck == false}" style="width: 285px; border-radius: 1em;" class="btn btn-primary" type="button" th:onclick="|location.href='@{/picture/follow/{a}(a=${picture.getId()})}'|">팔로우 하기</button>
-            </div>
-        </span>
-    </div>
+<div style="height: 170px; background-color: rgba(220,220,220,0.3); margin-top: 20px"></div>
 
-    <div class="container" style="height: 300px; width: 920px; background-color: whitesmoke; margin-left: 400px">
-        <div style="text-align: right; margin-right: 40px; padding-top: 25px">
-            <span th:text="${picture.likeCount}">좋아요 수</span>
+<div style="height: 100px">
+    <span style="height: 130px; width: 130px; display: inline-block; position: relative; top: -53px; margin-left: 245px">
+        <div class="profile-user-img" style="height: 120px; width: 120px">
+            <img style="height: 120px; width: 120px" th:src ="|/profileFile/${loginMember.profilePicture.storeFileName}|" alt="profile-user-img" class="profile-user-img-img">
         </div>
-        <div style="text-align: right;">
-            <button th:if="${likeCheck == true}" style="border-radius: 2em; margin-right: 10px" class="btn btn-secondary" type="button" th:onclick="|location.href='@{/picture/like/{a}(a=${picture.getId()})}'|">좋아요</button>
-            <button th:if="${likeCheck == false}" style="border-radius: 2em; margin-right: 10px" class="btn btn-primary" type="button" th:onclick="|location.href='@{/picture/like/{a}(a=${picture.getId()})}'|">좋아요</button>
+    </span>
+
+    <span style="display: inline-block; position: relative; bottom: 52px">
+        <div style="font-weight: bold; font-size: 20px" th:text="${loginMember.nickName}"></div>
+        <div>
+            <span style="display: inline-block; font-size: 15px; font-weight: bold" th:text="${loginMember.following}"></span>
+            <span th:onclick="|location.href='@{/member/room/follow}'|" style="display: inline-block; cursor:pointer; font-size: 14px; color: gray">팔로우 중</span>
         </div>
-        <div style="text-align: left; margin-left: 115px; font-size: 20px; font-weight: bold" th:text="${picture.title}">
-            <h5>Title</h5>
-        </div>
-        <div th:if="${picture.content != null}" style="text-align: left; margin-left: 115px; padding-top: 20px" th:text="${picture.content}">
-            <pre>
-                간단한 요약입니다.
-                반갑습니다.
-            </pre>
-        </div>
-    </div>
+    </span>
 </div>
 
+<div style="max-height: 100%; width: 1320px; margin-left: 255px; background-color: rgba(210,210,210,0.1);
+ border-radius: 0.5em; padding-top: 30px">
+    <div style="height: 55px; width: 950px; margin-left: 20px"></div>
+
+    <span th:if="${!pictures.isEmpty()}" th:each="picture : ${pictures}" class="card myClass"
+          style="background-color: rgba(50,50,50,0); border:0; width: 200px; height: 200px; overflow: hidden; display: inline-block; margin: 10px">
+        <img th:src="|/pictureFile/${picture.picture.storeFileName}|"
+             th:onclick="|location.href='@{/picture/{a}(a=${picture.getId()})}'|"
+             style="cursor: pointer; border-radius: 1em" class="card-img-top">
+        <div class="card-body" style="max-height: 14px; padding: 0.75em">
+            <h6 class="card-title" style="margin-bottom: 4px; font-weight: bold"
+                th:text="${picture.title}">새로운 사진들</h6>
+        </div>
+    </span>
+</div>
+
+<div style="height: 100px"></div>
 </body>
 </html>

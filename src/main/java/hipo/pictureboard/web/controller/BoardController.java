@@ -3,6 +3,7 @@ package hipo.pictureboard.web.controller;
 import hipo.pictureboard.domain.Member;
 import hipo.pictureboard.domain.Picture;
 import hipo.pictureboard.domain.PictureType;
+import hipo.pictureboard.service.MemberService;
 import hipo.pictureboard.service.PageService;
 import hipo.pictureboard.service.PictureService;
 import hipo.pictureboard.web.argumentresolver.Login;
@@ -22,21 +23,28 @@ import java.util.List;
 @Slf4j
 public class BoardController {
 
+    private final MemberService memberService;
     private final PictureService pictureService;
     private final PageService pageService;
 
     @GetMapping("/boards/main")
-    public String mainBoard(@Login Member loginMember, Model model) {
+    public String mainBoard(@Login Member member, Model model) {
+        Member loginMember = memberService.findOne(member.getId());
         List<Picture> pictures = pictureService.findAll();
+        List<Picture> rankedPictures = pictureService.rankByLikes();
+        List<Picture> followPictures = pictureService.recommendByFollow(loginMember.getId());
 
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("pictures", pictures);
+        model.addAttribute("rankedPictures", rankedPictures);
+        model.addAttribute("followPictures", followPictures);
 
         return "/boards/main";
     }
 
     @GetMapping("/boards/picture/{page}")
-    public String pictureBoard(@Login Member loginMember, @PathVariable int page, Model model) {
+    public String pictureBoard(@Login Member member, @PathVariable int page, Model model) {
+        Member loginMember = memberService.findOne(member.getId());
         model.addAttribute("loginMember", loginMember);
         List<Picture> pictures = pictureService.AllByPage(page);
         int totalPictureSize = pictureService.AllPictureSize();
@@ -49,7 +57,8 @@ public class BoardController {
     }
 
     @GetMapping("/boards/picture/people/{page}")
-    public String peoplePictureBoard(@Login Member loginMember, @PathVariable int page, Model model) {
+    public String peoplePictureBoard(@Login Member member, @PathVariable int page, Model model) {
+        Member loginMember = memberService.findOne(member.getId());
         model.addAttribute("loginMember", loginMember);
         List<Picture> pictures = pictureService.PictureTypeByPage(PictureType.PEOPLE, page);
         int totalPictureSize = pictureService.PictureTypePictureSize(PictureType.PEOPLE);
@@ -62,7 +71,8 @@ public class BoardController {
     }
 
     @GetMapping("/boards/picture/scenery/{page}")
-    public String sceneryPictureBoard(@Login Member loginMember, @PathVariable int page, Model model) {
+    public String sceneryPictureBoard(@Login Member member, @PathVariable int page, Model model) {
+        Member loginMember = memberService.findOne(member.getId());
         model.addAttribute("loginMember", loginMember);
         List<Picture> pictures = pictureService.PictureTypeByPage(PictureType.SCENERY, page);
         int totalPictureSize = pictureService.PictureTypePictureSize(PictureType.SCENERY);
@@ -75,7 +85,8 @@ public class BoardController {
     }
 
     @GetMapping("/boards/picture/travel/{page}")
-    public String travelPictureBoard(@Login Member loginMember, @PathVariable int page, Model model) {
+    public String travelPictureBoard(@Login Member member, @PathVariable int page, Model model) {
+        Member loginMember = memberService.findOne(member.getId());
         model.addAttribute("loginMember", loginMember);
         List<Picture> pictures = pictureService.PictureTypeByPage(PictureType.TRAVLE, page);
         int totalPictureSize = pictureService.PictureTypePictureSize(PictureType.TRAVLE);
@@ -88,7 +99,8 @@ public class BoardController {
     }
 
     @GetMapping("/boards/picture/search/{page}")
-    public String searchByTitleBoard(@Login Member loginMember, @RequestParam("search") String search, @PathVariable int page, Model model) {
+    public String searchByTitleBoard(@Login Member member, @RequestParam("search") String search, @PathVariable int page, Model model) {
+        Member loginMember = memberService.findOne(member.getId());
         model.addAttribute("loginMember", loginMember);
         List<Picture> pictures = pictureService.searchByTitle(search);
         int totalPictureSize = pictureService.TitlePictureSize(search);

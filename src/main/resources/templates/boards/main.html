@@ -132,6 +132,58 @@
     <div class="swiper-button-prev"></div><!-- 이전 버튼 -->
 </div>
 
+<div style="height: 150px"></div>
+
+<div th:if="${!(rankedPictures.isEmpty())}" class="swiper-container" style="position: relative; top: 100px">
+    <div class="row">
+        <p class="col" style="font-size: 20px"><b>인기 순위 사진들</b></p>
+    </div>
+    <div class="swiper-wrapper">
+        <div class="swiper-slide" th:each=" picture : ${rankedPictures}">
+            <div class="card" style="border:0;">
+                <img th:src="|/pictureFile/${picture.picture.storeFileName}|"
+                     th:onclick="|location.href='@{/picture/{a}(a=${picture.getId()})}'|"
+                     style="cursor: pointer" class="card-img-top">
+                <div class="card-body" style="max-height: 14px; padding: 0.75em">
+                    <h6 class="card-title" style="margin-bottom: 4px; font-weight: bold"
+                        th:text="${picture.title}">새로운 사진들</h6>
+                    <p class="card-text" th:text="${picture.member.nickName}" style="color: gray">테스터</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 네비게이션 -->
+    <div class="swiper-button-next"></div><!-- 다음 버튼 (오른쪽에 있는 버튼) -->
+    <div class="swiper-button-prev"></div><!-- 이전 버튼 -->
+</div>
+
+<div style="height: 150px"></div>
+
+<div th:if="${!(followPictures.isEmpty())}" class="swiper-container" style="position: relative; top: 100px">
+    <div class="row">
+        <p class="col" style="font-size: 20px"><b>추천 사진들</b></p>
+    </div>
+    <div class="swiper-wrapper">
+        <div class="swiper-slide" th:each=" picture : ${followPictures}">
+            <div class="card" style="border:0;">
+                <img th:src="|/pictureFile/${picture.picture.storeFileName}|"
+                     th:onclick="|location.href='@{/picture/{a}(a=${picture.getId()})}'|"
+                     style="cursor: pointer" class="card-img-top">
+                <div class="card-body" style="max-height: 14px; padding: 0.75em">
+                    <h6 class="card-title" style="margin-bottom: 4px; font-weight: bold"
+                        th:text="${picture.title}">새로운 사진들</h6>
+                    <p class="card-text" th:text="${picture.member.nickName}" style="color: gray">테스터</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 네비게이션 -->
+    <div class="swiper-button-next"></div><!-- 다음 버튼 (오른쪽에 있는 버튼) -->
+    <div class="swiper-button-prev"></div><!-- 이전 버튼 -->
+</div>
+
+<div style="height: 200px"></div>
+
 <script>
 
     document.addEventListener("DOMContentLoaded", function() {

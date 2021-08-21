@@ -2,6 +2,7 @@ package hipo.pictureboard.repository;
 
 import hipo.pictureboard.domain.Follow;
 import hipo.pictureboard.domain.Member;
+import hipo.pictureboard.domain.OneClickStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,8 +21,10 @@ public class FollowRepository {
 
     public List<Follow> findByFollowMember(Member followMember) {
         return em.createQuery("select f from Follow f join f.followMember m" +
-                    " where m.id = :followMemberId", Follow.class)
+                        " where m.id = :followMemberId" +
+                        " and f.status = :status", Follow.class)
                     .setParameter("followMemberId", followMember.getId())
+                    .setParameter("status", OneClickStatus.CLICK)
                     .getResultList();
     }
 
@@ -31,6 +34,7 @@ public class FollowRepository {
                 .setParameter("followedMemberId", followedMember.getId())
                 .getResultList();
     }
+
 
     public List<Follow> findByFollowOneMember(Member followMember, Member followedMember) {
         return em.createQuery("select f from Follow f join f.followMember m" +
