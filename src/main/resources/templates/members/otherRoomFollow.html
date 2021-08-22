@@ -100,7 +100,7 @@
     </span>
 </div>
 
-<div th:if="${!followAndPictures.isEmpty()}" th:each="followAndPicture : ${followAndPictures}" style="width: 1255px; margin-left: 275px; margin-top: 50px">
+<div th:if="${!followAndPictures.isEmpty()}" th:each="followAndPicture : ${followAndPictures}" style="width: 1255px; height: 265px; margin-left: 275px; margin-top: 50px">
     <span style="height: 117px; width: 115px; display: inline-block; position: relative; bottom: 75px;">
         <div class="profile-user-img" style="height: 100px; width: 100px">
             <img style="height: 100px; width: 100px" th:src ="|/profileFile/${followAndPicture.followedMember.profilePicture.storeFileName}|" alt="profile-user-img" class="profile-user-img-img">
@@ -125,6 +125,14 @@
         <div class="card-body" style="max-height: 14px; padding: 0.75em">
             <h6 class="card-title" style="margin-bottom: 4px; font-weight: bold"
                 th:text="${picture.title}">새로운 사진들</h6>
+        </div>
+    </span>
+
+    <span th:if="${followAndPicture.followedPictures.isEmpty()}" class="card myClass"
+          style="background-color: rgba(50,50,50,0); border:0; width: 200px; height: 200px; overflow: hidden; display: inline-block; margin: 10px; position: relative; top: 30px; left: 115px">
+        <img th:src="|/img/hiponacho.png|" style="cursor: pointer; border-radius: 1em" class="card-img-top">
+        <div class="card-body" style="max-height: 14px; padding: 0.75em">
+            <h6 class="card-title" style="margin-bottom: 4px; font-weight: bold">no picture</h6>
         </div>
     </span>
     <hr class="my-4">

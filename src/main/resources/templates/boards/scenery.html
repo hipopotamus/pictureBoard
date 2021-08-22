@@ -112,15 +112,15 @@
     <nav aria-label="Page navigation example">
       <ul class="pagination">
         <li class="page-item">
-          <a class="page-link" th:href="|/boards/picture/${pageNumber[0] - 1}|" aria-label="Previous">
+          <a class="page-link" th:href="|/boards/picture/scenery/${pageNumber[0] - 1}|" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
         <li class="page-item" th:each="number : ${pageNumber}">
-          <a class="page-link" th:href="|/boards/picture/${number}|" th:text="${number}">1</a>
+          <a class="page-link" th:href="|/boards/picture/scenery/${number}|" th:text="${number}">1</a>
         </li>
         <li class="page-item" th:if="${lastPageCheck == true}" th:with="lastNumber = ${#lists.size(pageNumber) - 1}">
-          <a class="page-link" th:href="|/boards/picture/${pageNumber[lastNumber] + 1}|" aria-label="Next">
+          <a class="page-link" th:href="|/boards/picture/scenery/${pageNumber[lastNumber] + 1}|" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>

@@ -109,7 +109,7 @@
 
 <div th:if="${!(pictures.isEmpty())}" class="swiper-container" style="position: relative; top: 100px">
     <div class="row">
-        <p class="col" style="font-size: 20px"><b>새로운 사진들</b></p>
+        <p class="col" style="font-size: 20px"><b>새로운 사진</b></p>
         <p class="col" th:onclick="|location.href='@{/boards/picture/0}'|"
            style="text-align: right;cursor: pointer; font-size: 15px; color: gray">모두보기</p>
     </div>
@@ -136,7 +136,7 @@
 
 <div th:if="${!(rankedPictures.isEmpty())}" class="swiper-container" style="position: relative; top: 100px">
     <div class="row">
-        <p class="col" style="font-size: 20px"><b>인기 순위 사진들</b></p>
+        <p class="col" style="font-size: 20px"><b>인기 순위 사진</b></p>
     </div>
     <div class="swiper-wrapper">
         <div class="swiper-slide" th:each=" picture : ${rankedPictures}">
@@ -161,7 +161,7 @@
 
 <div th:if="${!(followPictures.isEmpty())}" class="swiper-container" style="position: relative; top: 100px">
     <div class="row">
-        <p class="col" style="font-size: 20px"><b>추천 사진들</b></p>
+        <p class="col" style="font-size: 20px"><b>추천 사진</b></p>
     </div>
     <div class="swiper-wrapper">
         <div class="swiper-slide" th:each=" picture : ${followPictures}">
