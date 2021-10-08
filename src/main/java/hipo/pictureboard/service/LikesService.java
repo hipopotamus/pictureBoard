@@ -5,15 +5,11 @@ import hipo.pictureboard.repository.LikesRepository;
 import hipo.pictureboard.repository.MemberRepository;
 import hipo.pictureboard.repository.PictureRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -27,45 +23,35 @@ public class LikesService {
     public Likes create(Long memberId, Long pictureId) {
         Member member = memberRepository.findOne(memberId);
         Picture picture = pictureRepository.findOne(pictureId);
-        Likes likes = Likes.createLikes(member, picture);
+        Likes likes = new Likes(member, picture);
         likesRepository.save(likes);
         return likes;
     }
 
-    public boolean findByOneMember(Long memberId, Long pictureId) {
+    public boolean likesCheck(Long memberId, Long pictureId) {
         Member member = memberRepository.findOne(memberId);
         Picture picture = pictureRepository.findOne(pictureId);
-        List<Likes> likesList = likesRepository.findByOneMember(member, picture);
+        List<Likes> likesList = likesRepository.findByMemberAndPicture(member, picture);
 
-        if (likesList.isEmpty() || likesList.get(0).getStatus() == OneClickStatus.CANCEL) {
+        if (likesList.isEmpty() || likesList.get(0).getStatus() == OnClickStatus.OFF) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     @Transactional
-    public Likes oneClick(Long memberId, Long pictureId) {
+    public void onClick(Long memberId, Long pictureId) {
         Member member = memberRepository.findOne(memberId);
         Picture picture = pictureRepository.findOne(pictureId);
-        List<Likes> likesList = likesRepository.findByOneMember(member, picture);
+        List<Likes> likesList = likesRepository.findByMemberAndPicture(member, picture);
 
-        log.info("like상태는? = {}", likesList.isEmpty());
         if (likesList.isEmpty()) {
-            Likes createdLikes = create(memberId, pictureId);
+            create(memberId, pictureId);
             picture.addLikeCount();
-            return createdLikes;
         } else {
             Likes getLikes = likesList.get(0);
-            if (getLikes.getStatus() == OneClickStatus.CLICK) {
-                getLikes.setStatus(OneClickStatus.CANCEL);
-                picture.removeLikeCount();
-                return getLikes;
-            } else {
-                getLikes.setStatus(OneClickStatus.CLICK);
-                picture.addLikeCount();
-                return getLikes;
-            }
+
+            getLikes.switchStatus();
         }
     }
 

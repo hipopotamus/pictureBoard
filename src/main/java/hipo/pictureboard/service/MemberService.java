@@ -18,12 +18,29 @@ public class MemberService {
 
     @Transactional
     public Member create(String loginId, String password, String nickName, Img profilePicture) {
-        Member member = Member.createMember(loginId, password, nickName, profilePicture);
-        join(member);
+        validateDuplicateLoginId(loginId);
+        validateDuplicateNickName(nickName);
+
+        Member member = new Member(loginId, password, nickName, profilePicture);
+        memberRepository.save(member);
         return member;
     }
 
-    public Member findOne(Long memberId) {
+    private void validateDuplicateLoginId(String loginId) {
+        List<Member> findMembers = memberRepository.findByLoginId(loginId);
+        if (!findMembers.isEmpty()) {
+            throw new IllegalStateException("이미 존재하는 회원입니다.");
+        }
+    }
+
+    private void validateDuplicateNickName(String nickName) {
+        List<Member> findMembers = memberRepository.findByNickName(nickName);
+        if (!findMembers.isEmpty()) {
+            throw new IllegalStateException("이미 존재하는 닉네임입니다.");
+        }
+    }
+
+    public Member findByOne(Long memberId) {
         return memberRepository.findOne(memberId);
     }
 
@@ -33,27 +50,6 @@ public class MemberService {
 
     public List<Member> findByNickName(String nickName) {
         return memberRepository.findByNickName(nickName);
-    }
-
-    public Long join(Member member) {
-        validateDuplicateLoginId(member);
-        validateDuplicateNickName(member);
-        memberRepository.save(member);
-        return member.getId();
-    }
-
-    private void validateDuplicateLoginId(Member member) {
-        List<Member> findMembers = memberRepository.findByLoginId(member.getLoginId());
-        if (!findMembers.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 회원입니다.");
-        }
-    }
-
-    private void validateDuplicateNickName(Member member) {
-        List<Member> findMembers = memberRepository.findByNickName(member.getNickName());
-        if (!findMembers.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 닉네임입니다.");
-        }
     }
 
 }

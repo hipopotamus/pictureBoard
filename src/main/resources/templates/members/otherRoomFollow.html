@@ -39,7 +39,7 @@
     </span>
 
     <span style="height: 100px; width: 700px; margin-left: 439px; display: inline-block; position: relative; top:-33px;">
-        <form action="" th:action="|/boards/picture/search/0|" method="get" style="width: 450px; margin: auto">
+        <form action="" th:action="|/boards/picture/search/1|" method="get" style="width: 450px; margin: auto">
             <input type="text" id="search" name="search" class="form-control " placeholder="사진 제목 검색">
         </form>
     </span>
@@ -111,9 +111,12 @@
         <div th:text="${followAndPicture.followedMember.nickName}" style="font-size: 18px; font-weight: bold">
             닉네임
         </div>
-        <div style="margin-top: 10px">
+        <div th:if="${followAndPicture.followedMember.id != loginMember.id}" style="margin-top: 10px">
             <button th:if="${followAndPicture.followCheck == true}" style="width: 115px; border-radius: 1em;" class="btn btn-secondary" type="button" th:onclick="|location.href='@{/member/otherRoom/followOneClick/{a}(a=${followAndPicture.followedMember.Id}, otherMemberId=${otherMember.Id})}'|">팔로우 중</button>
             <button th:if="${followAndPicture.followCheck == false}" style="width: 115px; border-radius: 1em;" class="btn btn-primary" type="button" th:onclick="|location.href='@{/member/otherRoom/followOneClick/{a}(a=${followAndPicture.followedMember.Id}, otherMemberId=${otherMember.Id})}'|">팔로우 하기</button>
+        </div>
+        <div th:if="${followAndPicture.followedMember.id == loginMember.id}" style="height: 37px; width: 114px">
+
         </div>
     </span>
 

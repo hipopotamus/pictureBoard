@@ -1,7 +1,6 @@
 package hipo.pictureboard.service;
 
 import hipo.pictureboard.domain.*;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +9,10 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -22,6 +22,7 @@ public class PictureServiceTest {
     @Autowired PictureService pictureService;
     @Autowired MemberService memberService;
     @Autowired FollowService followService;
+    @Autowired EntityManager em;
 
     public void makePictures() {
         Member member = memberService.create("member1", "password1", "nickName1", new Img("fileName", "storeFileName"));
@@ -33,28 +34,48 @@ public class PictureServiceTest {
             PictureType pictureType = PictureType.PEOPLE;
             Long memberId = member.getId();
             Img pictureImg = new Img("fileName", "storeFileName");
-            Picture picture = pictureService.create(title, content, pictureType, memberId, pictureImg);
-            picture.setLikeCount(i);
-        }
+            Picture picture = pictureService.create(title, content, pictureType, memberId, pictureImg);}
 
         for (int i = 100; i < 150; i++) {
             String title = "title" + i;
             String content = "content" + i;
-            PictureType pictureType = PictureType.TRAVLE;
+            PictureType pictureType = PictureType.TRAVEL;
             Long memberId = member2.getId();
             Img pictureImg = new Img("fileName", "storeFileName");
             Picture picture = pictureService.create(title, content, pictureType, memberId, pictureImg);
-            picture.setLikeCount(i);
         }
+    }
+
+    @Test
+    @Rollback(value = false)
+    public void 조인정렬테스트() {
+        makePictures();
+        TypedQuery<Member> query = em.createQuery("select m from Picture p left join p.member m on m.profilePicture.fileName = 'sample1'", Member.class);
+        List<Member> resultList = query.getResultList();
+//
+        System.out.println("size = " + resultList.size() );
+        System.out.println("============================");
+
+        for (Member member : resultList) {
+            System.out.println("member = " + member.getNickName());
+        }
+
+//        for (Object[] objects : resultList) {
+//            Member member = (Member) objects[0];
+//            Picture picture = (Picture) objects[1];
+//            System.out.println("member.getNickName() = " + member.getNickName());
+//            System.out.println("picture = " + picture.getTitle());
+//            System.out.println("==============================================");
+//        }
     }
 
     @Test
 //    @Rollback(value = false)
     public void 사진_전체_조회() {
         makePictures();
-        List<Picture> pictures = pictureService.findAll();
+        List<Picture> pictures = pictureService.findByAll();
         System.out.println("조회된 사진의 총 사이즈는 " + pictures.size() + " 입니다.");
-        System.out.println("조회된 사진의 총 사이즈는 " + pictureService.AllPictureSize() + " 입니다(함수).");
+        System.out.println("조회된 사진의 총 사이즈는 " + pictureService.SizeByAll() + " 입니다(함수).");
     }
 
     @Test
@@ -62,27 +83,18 @@ public class PictureServiceTest {
     public void 사진_페이지_조회() {
         makePictures();
 
-        List<Picture> pictures = pictureService.AllByPage(1);
+        List<Picture> pictures = pictureService.PagingByAll(1);
 
         pictures.stream()
                 .forEach(p -> System.out.println(p.getId()));
     }
 
-    @Test
-    @Rollback(value = false)
-    public void 사진_멤버_조회() {
-        makePictures();
-        Member member = memberService.findByLoginId("member1").get(0);
-        List<Picture> pictures = pictureService.MemberByPage(member.getId(), 1);
-        pictures.stream()
-                .forEach(p -> System.out.println(p.getTitle()));
-    }
 
     @Test
     @Rollback(value = false)
     public void 사진_타입_조회() {
         makePictures();
-        List<Picture> pictures = pictureService.PictureTypeByPage(PictureType.TRAVLE, 4);
+        List<Picture> pictures = pictureService.PagingByPictureType(PictureType.TRAVEL, 4);
         pictures.stream()
                 .forEach(p -> System.out.println(p.getTitle()));
     }
@@ -97,43 +109,13 @@ public class PictureServiceTest {
         Member member3 = memberService.findByLoginId("member3").get(0);
         Follow follow1 = followService.create(member3.getId(), member1.getId());
         Follow follow2 = followService.create(member3.getId(), member2.getId());
-        List<Picture> pictures = pictureService.recommendByFollow(member3.getId());
+        List<Picture> pictures = pictureService.recommendPictureByFollow(member3.getId());
         System.out.println("조회된 사진의 총 사이즈는 " + pictures.size() + " 입니다.");
         pictures.stream()
                 .forEach(p -> System.out.println(p.getId()));
     }
 
-    @Test
-    public void 사진_좋아요_조회() {
-        makePictures();
-        List<Picture> all = pictureService.findAll();
-        all.get(50).setLikeCount(1000);
-        List<Picture> pictures = pictureService.rankByLikes();
-        System.out.println("첫 번째 사진의 좋아요 수는 " + pictures.get(0).getLikeCount() + " 입니다." );
-    }
 
-    @Test
-    public void 사진_타이틀_검색명_조회() {
-        makePictures();
-        List<Picture> all = pictureService.findAll();
-        all.get(50).setTitle("testTitle1");
-        all.get(51).setTitle("testTitle2");
-        all.get(90).setTitle("Titletest1");
-        List<Picture> pictures = pictureService.searchByTitle("tes");
-        pictures.stream()
-                .forEach(p -> System.out.println("검색된 사진의 타이틀 = " + p.getTitle()));
-    }
 
-    @Test
-    public void 사진_타이틀_검색명_페이지_조회() {
-        makePictures();
-        List<Picture> all = pictureService.findAll();
-        all.get(50).setTitle("testTitle1");
-        all.get(51).setTitle("testTitle2");
-        all.get(90).setTitle("Titletest1");
-        List<Picture> pictures = pictureService.TitleByPage("tes", 1);
-        pictures.stream()
-                .forEach(p -> System.out.println("검색된 사진의 타이틀 = " + p.getTitle()));
-    }
 
 }

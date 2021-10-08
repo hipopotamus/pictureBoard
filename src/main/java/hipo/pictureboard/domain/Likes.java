@@ -1,13 +1,11 @@
 package hipo.pictureboard.domain;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
-@Getter @Setter
+@Getter
 public class Likes {
 
     @Id @GeneratedValue
@@ -23,13 +21,25 @@ public class Likes {
     private Picture picture;
 
     @Enumerated(EnumType.STRING)
-    private OneClickStatus status;
+    private OnClickStatus status;
 
-    public static Likes createLikes(Member member, Picture picture) {
-        Likes likes = new Likes();
-        likes.setMember(member);
-        likes.setPicture(picture);
-        likes.setStatus(OneClickStatus.CLICK);
-        return likes;
+    public Likes(Member member, Picture picture) {
+        this.member = member;
+        this.picture = picture;
+        this.status = OnClickStatus.ON;
+    }
+
+    protected Likes() {
+    }
+
+    public void switchStatus() {
+        if (this.status == OnClickStatus.ON) {
+            this.status = OnClickStatus.OFF;
+            picture.removeLikeCount();
+        } else {
+            this.status = OnClickStatus.ON;
+            picture.addLikeCount();
+        }
+
     }
 }

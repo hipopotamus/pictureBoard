@@ -8,7 +8,6 @@ import hipo.pictureboard.web.argumentresolver.Login;
 import hipo.pictureboard.web.form.NewPictureForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +31,7 @@ public class PictureController {
     private final FileService fileService;
     private final LikesService likesService;
     private final FollowService followService;
+    private final LoginService loginService;
 
     @Value("${file.picture}")
     private String filePicture;
@@ -43,7 +43,7 @@ public class PictureController {
 
     @GetMapping("/picture/add")
     public String createPicture(@Login Member member, @ModelAttribute("pictureForm") NewPictureForm pictureForm, Model model) {
-        Member loginMember = memberService.findOne(member.getId());
+        Member loginMember = memberService.findByOne(member.getId());
         model.addAttribute("loginMember", loginMember);
         return "/pictures/newPictureForm";
     }
@@ -70,13 +70,13 @@ public class PictureController {
 
     @GetMapping("/picture/{pictureId}")
     public String picture(@Login Member member, @PathVariable Long pictureId, Model model) {
-        Member loginMember = memberService.findOne(member.getId());
+        Member loginMember = memberService.findByOne(member.getId());
         model.addAttribute("loginMember", loginMember);
 
-        Picture picture = pictureService.findOne(pictureId);
-        boolean likeCheck = likesService.findByOneMember(loginMember.getId(), pictureId);
-        boolean followCheck = followService.findByFollowOneMember(loginMember.getId(), picture.getMember().getId());
-        boolean selfFollowCheck = followService.selfFollowCheck(loginMember.getId(), picture.getMember().getId());
+        Picture picture = pictureService.findByOne(pictureId);
+        boolean likeCheck = likesService.likesCheck(loginMember.getId(), pictureId);
+        boolean followCheck = followService.followCheck(loginMember.getId(), picture.getMember().getId());
+        boolean selfFollowCheck = loginService.checkMyPicture(loginMember.getId(), picture.getMember().getId());
         model.addAttribute("picture", picture);
         model.addAttribute("likeCheck", likeCheck);
         model.addAttribute("followCheck", followCheck);
@@ -87,14 +87,14 @@ public class PictureController {
 
     @GetMapping("picture/like/{pictureId}")
     public String clickLikes(@Login Member loginMember, @PathVariable Long pictureId) {
-        likesService.oneClick(loginMember.getId(), pictureId);
+        likesService.onClick(loginMember.getId(), pictureId);
         return "redirect:/picture/{pictureId}";
     }
 
     @GetMapping("picture/follow/{pictureId}")
     public String clickFollow(@Login Member loginMember, @PathVariable Long pictureId) {
-        Long followedMemberId = pictureService.findOne(pictureId).getMember().getId();
-        followService.oneClick(loginMember.getId(), followedMemberId);
+        Long followedMemberId = pictureService.findByOne(pictureId).getMember().getId();
+        followService.onClick(loginMember.getId(), followedMemberId);
         return "redirect:/picture/{pictureId}";
     }
 }

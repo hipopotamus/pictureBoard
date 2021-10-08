@@ -3,7 +3,6 @@ package hipo.pictureboard.service;
 import hipo.pictureboard.domain.Follow;
 import hipo.pictureboard.domain.Img;
 import hipo.pictureboard.domain.Member;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -59,19 +57,16 @@ public class FollowServiceTest {
         Member member3 = memberService.findByLoginId("followMember3").get(0);
         Member member4 = memberService.findByLoginId("followedMember1").get(0);
 
-        List<Follow> follows1 = followService.findByFollowingMember(member1.getId());
-        List<Follow> follows2 = followService.findByFollowingMember(member2.getId());
-        List<Follow> follows3 = followService.findByFollowingMember(member3.getId());
+        List<Follow> follows1 = followService.findByFollowMember(member1.getId());
+        List<Follow> follows2 = followService.findByFollowMember(member2.getId());
+        List<Follow> follows3 = followService.findByFollowMember(member3.getId());
 
 
         assertThat(follows1.size()).isEqualTo(50);
         assertThat(follows2.size()).isEqualTo(20);
         assertThat(follows3.size()).isEqualTo(0);
 
-        assertThat(followService.sizeOfFollowingMember(member1.getId())).isEqualTo(50);
-        assertThat(followService.sizeOfFollowerMember(member4.getId())).isEqualTo(1);
         assertThat(member1.getFollowing()).isEqualTo(50);
-        assertThat(member4.getFollower()).isEqualTo(1);
     }
 
     @Test
@@ -82,13 +77,13 @@ public class FollowServiceTest {
         Member member3 = memberService.findByLoginId("followMember3").get(0);
         Member member4 = memberService.findByLoginId("followedMember1").get(0);
 
-        followService.oneClick(member1.getId(), member4.getId());
-        followService.oneClick(member1.getId(), member4.getId());
-        boolean status1 = followService.findByFollowOneMember(member1.getId(), member4.getId());
+        followService.onClick(member1.getId(), member4.getId());
+        followService.onClick(member1.getId(), member4.getId());
+        boolean status1 = followService.followCheck(member1.getId(), member4.getId());
 
-        followService.oneClick(member3.getId(), member4.getId());
-        followService.oneClick(member3.getId(), member4.getId());
-        boolean status2 = followService.findByFollowOneMember(member3.getId(), member4.getId());
+        followService.onClick(member3.getId(), member4.getId());
+        followService.onClick(member3.getId(), member4.getId());
+        boolean status2 = followService.followCheck(member3.getId(), member4.getId());
 
         assertThat(status1).isEqualTo(true);
         assertThat(status2).isEqualTo(false);

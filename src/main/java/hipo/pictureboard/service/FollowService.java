@@ -4,13 +4,11 @@ import hipo.pictureboard.domain.*;
 import hipo.pictureboard.repository.FollowRepository;
 import hipo.pictureboard.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -23,71 +21,41 @@ public class FollowService {
     public Follow create(Long followMemberId, Long followedMemberId) {
         Member followMember = memberRepository.findOne(followMemberId);
         Member followedMember = memberRepository.findOne(followedMemberId);
-        Follow follow = new Follow();
-        follow = Follow.createFollow(followMember, followedMember);
+        Follow follow = new Follow(followMember, followedMember);
         followRepository.save(follow);
         return follow;
     }
 
-    public List<Follow> findByFollowingMember(Long followMemberId) {
+    public List<Follow> findByFollowMember(Long followMemberId) {
         Member followMember = memberRepository.findOne(followMemberId);
         return followRepository.findByFollowMember(followMember);
     }
 
-    public int sizeOfFollowingMember(Long followMemberId) {
-        return findByFollowingMember(followMemberId).size();
-    }
-
-    public int sizeOfFollowerMember(Long followedMemberId) {
-        Member member = memberRepository.findOne(followedMemberId);
-        return followRepository.findByFollowerMember(member).size();
-    }
-
-    public boolean findByFollowOneMember(Long followMemberId, Long followedMemberId) {
+    public boolean followCheck(Long followMemberId, Long followedMemberId) {
         Member followMember = memberRepository.findOne(followMemberId);
         Member followedMember = memberRepository.findOne(followedMemberId);
-        List<Follow> follows = followRepository.findByFollowOneMember(followMember, followedMember);
+        List<Follow> follows = followRepository.findByFollowAndFollowed(followMember, followedMember);
 
-        if (follows.isEmpty() || follows.get(0).getStatus() == OneClickStatus.CANCEL) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public boolean selfFollowCheck(Long followMemberId, Long followedMemberId) {
-        if (followMemberId == followedMemberId) {
+        if (follows.isEmpty() || follows.get(0).getStatus() == OnClickStatus.OFF) {
             return false;
         }
         return true;
     }
 
     @Transactional
-    public Follow oneClick(Long followMemberId, Long followedMemberId) {
+    public void onClick(Long followMemberId, Long followedMemberId) {
         Member followMember = memberRepository.findOne(followMemberId);
         Member followedMember = memberRepository.findOne(followedMemberId);
-        List<Follow> follows = followRepository.findByFollowOneMember(followMember, followedMember);
+        List<Follow> follows = followRepository.findByFollowAndFollowed(followMember, followedMember);
 
         if (follows.isEmpty()) {
-            Follow createdFollow = create(followMemberId, followedMemberId);
+            create(followMemberId, followedMemberId);
             followMember.addFollowing();
             followedMember.addFollower();
-            return createdFollow;
         } else {
             Follow getFollow = follows.get(0);
-            if (getFollow.getStatus() == OneClickStatus.CLICK) {
-                getFollow.setStatus(OneClickStatus.CANCEL);
-                followMember.removeFollowing();
-                followedMember.removeFollower();
-                log.info("following 삭제 ={}", followMember.getFollowing());
-                return getFollow;
-            } else {
-                getFollow.setStatus(OneClickStatus.CLICK);
-                followMember.addFollowing();
-                followedMember.addFollower();
-                log.info("following 추가 ={}", followMember.getFollowing());
-                return getFollow;
-            }
+
+            getFollow.switchStatus();
         }
     }
 }

@@ -2,14 +2,12 @@ package hipo.pictureboard.domain;
 
 import hipo.pictureboard.exception.NotBelowZeroException;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
-@Getter @Setter
+@Getter
 public class Picture {
 
 
@@ -46,15 +44,15 @@ public class Picture {
         this.likeCount = resetLikeCount;
     }
 
-    public static Picture createPicture(String title, String content, PictureType pictureType, Member member,
-                                        Img pictureImg) {
-        Picture picture = new Picture();
-        picture.setTitle(title);
-        picture.setContent(content);
-        picture.setPictureType(pictureType);
-        picture.setMember(member);
-        picture.setPicture(pictureImg);
-        picture.setSaveDate(LocalDateTime.now());
-        return picture;
+    public Picture(String title, String content, PictureType pictureType, Member member, Img picture) {
+        this.title = title;
+        this.content = content;
+        this.pictureType = pictureType;
+        this.saveDate = LocalDateTime.now();
+        this.member = member;
+        this.picture = picture;
+    }
+
+    protected Picture() {
     }
 }

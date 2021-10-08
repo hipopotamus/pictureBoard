@@ -63,7 +63,7 @@ public class MemberController {
 
     @GetMapping("/member/room")
     public String myRoom(@Login Member member, Model model) {
-        Member loginMember = memberService.findOne(member.getId());
+        Member loginMember = memberService.findByOne(member.getId());
         model.addAttribute("loginMember", loginMember);
         List<Picture> pictures = pictureService.findByMember(loginMember.getId());
         model.addAttribute("pictures", pictures);
@@ -72,7 +72,7 @@ public class MemberController {
 
     @GetMapping("/member/room/pictures")
     public String myRoomPictures(@Login Member member, Model model) {
-        Member loginMember = memberService.findOne(member.getId());
+        Member loginMember = memberService.findByOne(member.getId());
         model.addAttribute("loginMember", loginMember);
         List<Picture> pictures = pictureService.findByMember(loginMember.getId());
         model.addAttribute("pictures", pictures);
@@ -81,7 +81,7 @@ public class MemberController {
 
     @GetMapping("/member/room/follow")
     public String myRoomFollow(@Login Member member, Model model) {
-        Member loginMember = memberService.findOne(member.getId());
+        Member loginMember = memberService.findByOne(member.getId());
         model.addAttribute("loginMember", loginMember);
         List<FollowPictureDTO> followAndPictures = pictureService.getFollowAndPictures(loginMember.getId());
         model.addAttribute("followAndPictures", followAndPictures);
@@ -90,8 +90,8 @@ public class MemberController {
 
     @GetMapping("/member/otherRoom/{memberId}")
     public String otherRoom(@Login Member member, @PathVariable Long memberId,Model model) {
-        Member loginMember = memberService.findOne(member.getId());
-        Member otherMember = memberService.findOne(memberId);
+        Member loginMember = memberService.findByOne(member.getId());
+        Member otherMember = memberService.findByOne(memberId);
 
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("otherMember", otherMember);
@@ -102,8 +102,8 @@ public class MemberController {
 
     @GetMapping("/member/otherRoom/pictures/{memberId}")
     public String otherRoomPictures(@Login Member member, @PathVariable Long memberId, Model model) {
-        Member loginMember = memberService.findOne(member.getId());
-        Member otherMember = memberService.findOne(memberId);
+        Member loginMember = memberService.findByOne(member.getId());
+        Member otherMember = memberService.findByOne(memberId);
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("otherMember", otherMember);
         List<Picture> pictures = pictureService.findByMember(memberId);
@@ -113,8 +113,8 @@ public class MemberController {
 
     @GetMapping("/member/otherRoom/follow/{memberId}")
     public String otherRoomFollow(@Login Member member, @PathVariable Long memberId, Model model) {
-        Member loginMember = memberService.findOne(member.getId());
-        Member otherMember = memberService.findOne(memberId);
+        Member loginMember = memberService.findByOne(member.getId());
+        Member otherMember = memberService.findByOne(memberId);
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("otherMember", otherMember);
         List<FollowPictureDTO> followAndPictures = pictureService.getOtherFollowAndPictures(memberId, loginMember.getId());
@@ -124,13 +124,13 @@ public class MemberController {
 
     @GetMapping("member/room/followOneClick/{followedMemberId}")
     public String clickMyRoomFollow(@Login Member loginMember, @PathVariable Long followedMemberId) {
-        followService.oneClick(loginMember.getId(), followedMemberId);
+        followService.onClick(loginMember.getId(), followedMemberId);
         return "redirect:/member/room/follow";
     }
 
     @GetMapping("member/otherRoom/followOneClick/{followedMemberId}")
     public String clickOtherRoomFollow(@Login Member loginMember, @PathVariable Long followedMemberId, @RequestParam("otherMemberId") Long otherMemberId, RedirectAttributes redirectAttributes) {
-        followService.oneClick(loginMember.getId(), followedMemberId);
+        followService.onClick(loginMember.getId(), followedMemberId);
         redirectAttributes.addAttribute("otherMemberId", otherMemberId);
         return "redirect:/member/otherRoom/follow/{otherMemberId}";
     }

@@ -22,13 +22,15 @@ public class MemberRepository {
     }
 
     public List<Member> findByLoginId(String loginId) {
-        return em.createQuery("select m from Member m where m.loginId = :loginId", Member.class)
+        return em.createQuery("select m from Member m " +
+                        "where m.loginId = :loginId", Member.class)
                 .setParameter("loginId", loginId)
                 .getResultList();
     }
 
     public List<Member> findByNickName(String nickName) {
-        return em.createQuery("select m from Member m where m.nickName = :nickName", Member.class)
+        return em.createQuery("select m from Member m " +
+                        "where m.nickName = :nickName", Member.class)
                 .setParameter("nickName", nickName)
                 .getResultList();
     }

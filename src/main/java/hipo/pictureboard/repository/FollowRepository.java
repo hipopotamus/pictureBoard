@@ -2,7 +2,7 @@ package hipo.pictureboard.repository;
 
 import hipo.pictureboard.domain.Follow;
 import hipo.pictureboard.domain.Member;
-import hipo.pictureboard.domain.OneClickStatus;
+import hipo.pictureboard.domain.OnClickStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,28 +20,21 @@ public class FollowRepository {
     }
 
     public List<Follow> findByFollowMember(Member followMember) {
-        return em.createQuery("select f from Follow f join f.followMember m" +
-                        " where m.id = :followMemberId" +
-                        " and f.status = :status", Follow.class)
-                    .setParameter("followMemberId", followMember.getId())
-                    .setParameter("status", OneClickStatus.CLICK)
+        return em.createQuery("select f from Follow f " +
+                        "where f.followMember = :followMember " +
+                        "and f.status = :status", Follow.class)
+                    .setParameter("followMember", followMember)
+                    .setParameter("status", OnClickStatus.ON)
                     .getResultList();
     }
 
-    public List<Follow> findByFollowerMember(Member followedMember) {
-        return em.createQuery("select f from Follow f" +
-                        " where f.followedMember.id = :followedMemberId", Follow.class)
-                .setParameter("followedMemberId", followedMember.getId())
+    public List<Follow> findByFollowAndFollowed(Member followMember, Member followedMember) {
+        return em.createQuery("select f from Follow f " +
+                        "where f.followMember = :followMember " +
+                        "and f.followedMember = :followedMember", Follow.class)
+                .setParameter("followMember", followMember)
+                .setParameter("followedMember", followedMember)
                 .getResultList();
     }
 
-
-    public List<Follow> findByFollowOneMember(Member followMember, Member followedMember) {
-        return em.createQuery("select f from Follow f join f.followMember m" +
-                        " where f.followedMember.id = :followedMember" +
-                        " and m.id = :followMemberId", Follow.class)
-                .setParameter("followedMember", followedMember.getId())
-                .setParameter("followMemberId", followMember.getId())
-                .getResultList();
-    }
 }

@@ -6,13 +6,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,11 +36,11 @@ public class LikesServiceTest {
                 new Img("fileName3", "storeName3"));
         Member member2 = memberService.findByLoginId("member1").get(0);
         Picture picture = pictureService.findByMember(member2.getId()).get(0);
-        likesService.oneClick(member2.getId(), picture.getId());
-        likesService.oneClick(member2.getId(), picture.getId());
-        likesService.oneClick(member2.getId(), picture.getId());
-        likesService.oneClick(member2.getId(), picture.getId());
-        boolean likeStatus = likesService.findByOneMember(member2.getId(), picture.getId());
+        likesService.onClick(member2.getId(), picture.getId());
+        likesService.onClick(member2.getId(), picture.getId());
+        likesService.onClick(member2.getId(), picture.getId());
+        likesService.onClick(member2.getId(), picture.getId());
+        boolean likeStatus = likesService.likesCheck(member2.getId(), picture.getId());
         System.out.println("좋아요 상태는 = " + likeStatus);
         Assertions.assertThat(likeStatus).isEqualTo(true);
     }
@@ -59,11 +54,10 @@ public class LikesServiceTest {
                 new Img("fileName3", "storeName3"));
         Member member1 = memberService.findByLoginId("member1").get(0);
         Picture picture = pictureService.findByMember(member1.getId()).get(0);
-        Likes likes = likesService.oneClick(member2.getId(), picture.getId());
-        likesService.oneClick(member2.getId(), picture.getId());
-        likesService.oneClick(member2.getId(), picture.getId());
-        likesService.oneClick(member2.getId(), picture.getId());
-        boolean likeStatus = likesService.findByOneMember(member2.getId(), picture.getId());
+        likesService.onClick(member2.getId(), picture.getId());
+        likesService.onClick(member2.getId(), picture.getId());
+        likesService.onClick(member2.getId(), picture.getId());
+        boolean likeStatus = likesService.likesCheck(member2.getId(), picture.getId());
         System.out.println("좋아요 상태는 = " + likeStatus);
         Assertions.assertThat(likeStatus).isEqualTo(false);
     }

@@ -1,12 +1,11 @@
 package hipo.pictureboard.domain;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
-@Getter @Setter
+@Getter
 public class Follow {
 
     @Id @GeneratedValue
@@ -22,13 +21,27 @@ public class Follow {
     private Member followedMember;
 
     @Enumerated(EnumType.STRING)
-    private OneClickStatus status;
+    private OnClickStatus status;
 
-    public static Follow createFollow(Member followMember, Member followedMember) {
-        Follow follow = new Follow();
-        follow.setFollowMember(followMember);
-        follow.setFollowedMember(followedMember);
-        follow.setStatus(OneClickStatus.CLICK);
-        return follow;
+    public Follow(Member followMember, Member followedMember) {
+        this.followMember = followMember;
+        this.followedMember = followedMember;
+        this.status = OnClickStatus.ON;
+    }
+
+    protected Follow() {
+    }
+
+    public void switchStatus() {
+        if (this.status == OnClickStatus.ON) {
+            this.status = OnClickStatus.OFF;
+            followMember.removeFollowing();
+            followedMember.removeFollower();
+        } else {
+            this.status = OnClickStatus.ON;
+            followMember.addFollowing();
+            followedMember.addFollower();
+        }
+
     }
 }

@@ -7,7 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Getter @Setter
+@Getter
 public class Member {
 
     @Id @GeneratedValue
@@ -47,13 +47,13 @@ public class Member {
         this.follower = resetFollower;
     }
 
-    public static Member createMember(String loginId, String password, String nickName, Img profilePicture) {
-        Member member = new Member();
-        member.setLoginId(loginId);
-        member.setPassword(password);
-        member.setNickName(nickName);
-        member.setProfilePicture(profilePicture);
-        return member;
+    public Member(String loginId, String password, String nickName, Img profilePicture) {
+        this.loginId = loginId;
+        this.password = password;
+        this.nickName = nickName;
+        this.profilePicture = profilePicture;
     }
 
+    protected Member() {
+    }
 }

@@ -39,7 +39,7 @@
     </span>
 
     <span style="height: 100px; width: 700px; margin-left: 439px; display: inline-block; position: relative; top:-33px;">
-        <form action="" th:action="|/boards/picture/search/0|" method="get" style="width: 450px; margin: auto">
+        <form action="" th:action="|/boards/picture/search/1|" method="get" style="width: 450px; margin: auto">
             <input type="text" id="search" name="search" class="form-control " placeholder="사진 제목 검색">
         </form>
     </span>
@@ -89,10 +89,10 @@
  border-radius: 0.5em; padding-top: 30px">
     <div style="height: 100px; width: 950px; margin-left: 20px">
         <div class="btn-group" role="group" aria-label="Basic example">
-            <button class="btn btn-secondary" type="button" th:onclick="|location.href='@{/boards/picture/0}'|">전체</button>
-            <button class="btn btn-secondary" type="button" th:onclick="|location.href='@{/boards/picture/people/0}'|">인물</button>
-            <button class="btn btn-secondary" type="button" th:onclick="|location.href='@{/boards/picture/scenery/0}'|">풍경</button>
-            <button class="btn btn-primary" type="button" th:onclick="|location.href='@{/boards/picture/travel/0}'|">여행</button>
+            <button class="btn btn-secondary" type="button" th:onclick="|location.href='@{/boards/picture/1}'|">전체</button>
+            <button class="btn btn-secondary" type="button" th:onclick="|location.href='@{/boards/picture/people/1}'|">인물</button>
+            <button class="btn btn-secondary" type="button" th:onclick="|location.href='@{/boards/picture/scenery/1}'|">풍경</button>
+            <button class="btn btn-primary" type="button" th:onclick="|location.href='@{/boards/picture/travel/1}'|">여행</button>
         </div>
     </div>
 
@@ -108,25 +108,39 @@
         </div>
     </span>
 
-    <div style="margin-left: 425px; padding-bottom: 20px; padding-top: 30px">
+    <div th:if="${!checkPage.isEmpty()}" style="margin-left: 425px; padding-bottom: 20px; padding-top: 30px">
         <nav aria-label="Page navigation example">
             <ul class="pagination">
-                <li class="page-item">
+                <li class="page-item" th:if="${checkPage['checkFirstPage'] == false}">
                     <a class="page-link" th:href="|/boards/picture/travel/${pageNumber[0] - 1}|" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li class="page-item" th:each="number : ${pageNumber}">
-                    <a class="page-link" th:href="|/boards/picture/travel/${number}|" th:text="${number}">1</a>
+                <li class="page-item" th:if="${checkPage['checkFirstPage'] == true}">
+                    <a class="page-link" th:href="|/boards/picture/travel/1|" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
                 </li>
-                <li class="page-item" th:if="${lastPageCheck == true}" th:with="lastNumber = ${#lists.size(pageNumber) - 1}">
-                    <a class="page-link" th:href="|/boards/picture/treavel/${pageNumber[lastNumber] + 1}|" aria-label="Next">
+
+                <li class="page-item" th:each="number : ${pageNumber}">
+                    <a th:if="${page == numberStat.count}" style="background-color: #86b7fe; color: purple;" class="page-link" th:href="|/boards/picture/travel/${number}|" th:text="${number}">1</a>
+                    <a th:if="${page != numberStat.count}" class="page-link" th:href="|/boards/picture/travel/${number}|" th:text="${number}">1</a>
+                </li>
+
+                <li class="page-item" th:if="${checkPage['checkLastPage'] == false}" th:with="lastNumber = ${#lists.size(pageNumber) - 1}">
+                    <a class="page-link" th:href="|/boards/picture/travel/${pageNumber[lastNumber] + 1}|" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:if="${checkPage['checkLastPage'] == true}" th:with="lastNumber = ${#lists.size(pageNumber) - 1}">
+                    <a class="page-link" th:href="|/boards/picture/travel/${pageNumber[lastNumber]}|" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
             </ul>
         </nav>
     </div>
+    <div th:if="${checkPage.isEmpty()}" style="height: 100px"></div>
 </div>
 <div style="height: 100px"></div>
 

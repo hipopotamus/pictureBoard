@@ -19,19 +19,13 @@ public class LikesRepository {
         em.persist(likes);
     }
 
-    public List<Likes> findByPicture(Picture picture) {
-        return em.createQuery("select l from Likes l join l.picture p" +
-                        " where p.id = :pictureId", Likes.class)
-                .setParameter("pictureId", picture.getId())
+    public List<Likes> findByMemberAndPicture(Member member, Picture picture) {
+        return em.createQuery("select l from Likes l " +
+                        "where l.member = :member " +
+                        "and l.picture = :picture", Likes.class)
+                .setParameter("member", member)
+                .setParameter("picture", picture)
                 .getResultList();
     }
 
-    public List<Likes> findByOneMember(Member member, Picture picture) {
-        return em.createQuery("select l from Likes l join l.picture p" +
-                        " where p.id = :pictureId" +
-                        " and l.member.id = :memberId", Likes.class)
-                .setParameter("pictureId", picture.getId())
-                .setParameter("memberId", member.getId())
-                .getResultList();
-    }
 }

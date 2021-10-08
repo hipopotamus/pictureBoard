@@ -16,12 +16,6 @@ public class FileService {
         return path + filename;
     }
 
-    public Img createImg(MultipartFile multipartFile) {
-        String originalFilename = multipartFile.getOriginalFilename();
-        String storeFileName = createStoreFileName(originalFilename);
-        return new Img(originalFilename, storeFileName);
-    }
-
     public Img storeFile(MultipartFile multipartFile, String path) throws IOException {
         if (multipartFile.isEmpty()) {
             return null;

@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.swing.text.html.parser.Parser;
 import java.util.List;
 import java.util.Random;
 
@@ -41,7 +40,7 @@ public class TestInit {
         }
 
         for (int i = 18; i < 24; i++) {
-            pictureService.create("title" + i, "content" + i, PictureType.TRAVLE,
+            pictureService.create("title" + i, "content" + i, PictureType.TRAVEL,
                     Member2.getId(), new Img("samplePicture", "samplePicture" + i + ".jpg"));
         }
 
@@ -54,27 +53,27 @@ public class TestInit {
         //likes
 
         Random random = new Random();
-        List<Picture> pictures = pictureService.findAll();
+        List<Picture> pictures = pictureService.findByAll();
         for (int i = 4; i < 31; i++) {
             Member member = memberService.findByNickName("hipo" + i).get(0);
             for (int j = 0; j < 20; j++) {
-                likesService.oneClick(member.getId(), pictures.get((random.nextInt(28) + 1)).getId());
+                likesService.onClick(member.getId(), pictures.get((random.nextInt(28) + 1)).getId());
             }
         }
 
         //follow
-        followService.oneClick(Member1.getId(), Member2.getId());
-        followService.oneClick(Member1.getId(), Member3.getId());
-        followService.oneClick(Member2.getId(), Member1.getId());
-        followService.oneClick(Member2.getId(), Member3.getId());
-        followService.oneClick(Member3.getId(), Member1.getId());
-        followService.oneClick(Member3.getId(), Member2.getId());
+        followService.onClick(Member1.getId(), Member2.getId());
+        followService.onClick(Member1.getId(), Member3.getId());
+        followService.onClick(Member2.getId(), Member1.getId());
+        followService.onClick(Member2.getId(), Member3.getId());
+        followService.onClick(Member3.getId(), Member1.getId());
+        followService.onClick(Member3.getId(), Member2.getId());
 
         for (int i = 4; i < 31; i++) {
             Member member = memberService.findByNickName("hipo" + i).get(0);
             for (int j = 0; j < 20; j++) {
                 Member followedMember = memberService.findByNickName("hipo" + (random.nextInt(28) + 1)).get(0);
-                followService.oneClick(member.getId(), followedMember.getId());
+                followService.onClick(member.getId(), followedMember.getId());
             }
         }
     }
